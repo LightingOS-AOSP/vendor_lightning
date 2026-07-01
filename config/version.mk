@@ -1,13 +1,12 @@
-PRODUCT_VERSION_MAJOR = 16
+PRODUCT_VERSION_MAJOR = 17
 PRODUCT_VERSION_MINOR = 0
 
 # Increase Lightning Version with each major release.
-LIGHTNING_VERSION_DISPLAY := 
-LIGHTNING_FLAVOR := 
-LIGHTNING_VERSION_BASE := 
-LIGHTNING_CODENAME := 
+LIGHTNING_VERSION_DISPLAY := 1.0-Alphq 
+LIGHTNING_FLAVOR := Arc
+LIGHTNING_VERSION_BASE := 1.0 
+LIGHTNING_CODENAME := Alpha
 LIGHTNING_BUILD_TYPE ?= Unofficial
-
 LIGHTNING_BUILD_DATE := $(shell date -u +%Y%m%d)
 
 CURRENT_DEVICE := $(shell echo "$(TARGET_PRODUCT)" | cut -d'_' -f 2,3)
@@ -42,20 +41,15 @@ ifeq ($(LIGHTNING_BUILD_TYPE), OFFICIAL)
   endif
 endif
 
-
-# Lightning Packages
-#ifeq ($(WITH_GMS),true)
-#  ifeq ($(TARGET_USES_MINI_GAPPS), true)
-#    LIGHTNING_PACKAGE_TYPE ?= MINI
-#  else ifeq ($(TARGET_USES_PICO_GAPPS), true)
-#    LIGHTNING_PACKAGE_TYPE ?= PICO
-#  else
-#    LIGHTNING_PACKAGE_TYPE ?= GAPPS
-#  endif
-#else
-#  LIGHTNING_PACKAGE_TYPE ?= VANILLA
-#endif
-
+# GMS
+WITH_GMS ?= false
+ifeq ($(WITH_GMS),true)
+    $(call inherit-product, vendor/gms/products/gms.mk)
+    LIGHTNING_PACKAGE_TYPE := GAPPS
+else
+    LIGHTNING_PACKAGE_TYPE := VANILLA
+endif
+>
 # Internal version
 LINEAGE_VERSION := LightningOS-$(LIGHTNING_VERSION_BASE)-$(LIGHTNING_CODENAME)-$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR)-$(LIGHTNING_PACKAGE_TYPE)-$(shell date +%Y%m%d-%H%M)-$(LINEAGE_BUILD)-$(LIGHTNING_BUILD_TYPE)
 
